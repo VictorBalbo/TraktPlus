@@ -1,17 +1,8 @@
 <script setup lang="ts">
+import type { Media } from '@/models'
 import { useTemplateRef } from 'vue'
 
-const items = [
-  {
-    label: 'Section one',
-  },
-  {
-    label: 'Section two',
-  },
-  {
-    label: 'Section three',
-  },
-]
+const { items } = defineProps<{ items: Media[] }>()
 
 const slideItems = useTemplateRef('slider-item')
 const slider = useTemplateRef('slider')
@@ -28,8 +19,9 @@ const moveSlider = (move: number) => {
     <article class="controls left" @click="moveSlider(-1)">&#8249;</article>
     <article class="controls right" @click="moveSlider(+1)">&#8250;</article>
     <section class="slider" ref="slider">
-      <article v-for="item in items" :key="item.label" class="slider-item" ref="slider-item">
-        <h2>{{ item.label }}</h2>
+      <article v-for="item in items" :key="item.title" class="slider-item" ref="slider-item">
+        <img :src="item.images!.backdrops.file_path" class="item-img" />
+        <h2 class="item-title">{{ item.title }}</h2>
       </article>
     </section>
   </section>
@@ -37,36 +29,38 @@ const moveSlider = (move: number) => {
 <style scoped>
 .carousel {
   position: relative;
-  height: 300px;
   width: 100%;
 }
 .slider {
   height: 100%;
   width: 100%;
   display: flex;
-  overflow-x: scroll;
+  overflow-x: auto;
   scroll-snap-type: both mandatory;
   scroll-behavior: smooth;
 
   .slider-item {
-    min-height: 100%;
-    min-width: 95%;
-    padding: 10px;
-    margin: 0 0.5rem;
+    display: flex;
+    flex-shrink: 0;
+    width: 90%;
+    max-width: 1440px;
+    margin: 0 var(--small-spacing);
     scroll-snap-align: center;
+    overflow: hidden;
+    position: relative;
+    border-radius: var(--large-spacing);
+
+    &:first-child {
+      margin-left: 10%;
+    }
+    &:last-child {
+      margin-right: 10%;
+    }
   }
-  .slider-item:first-child {
-    margin-left: 5%;
-  }
-  .slider-item:last-child {
-    margin-right: 5%;
-  }
-  /* TODO: Remove this */
-  .slider-item:nth-child(odd) {
-    background-color: #ccc;
-  }
-  .slider-item:nth-child(even) {
-    background-color: #333;
+  @media (min-width: 1024px) {
+    .slider-item {
+      background-color: red;
+    }
   }
 
   &::-webkit-scrollbar {
@@ -75,24 +69,25 @@ const moveSlider = (move: number) => {
   }
 }
 .controls {
-  height: 4rem;
-  width: 2rem;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 3rem;
   position: absolute;
   top: 0;
   bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
-  background-color: white;
-  color: #333;
+  margin: auto var(--large-spacing);
+  background-color: var(--color-background);
+  color: var(--color-text);
   font-size: 3rem;
-  opacity: 0.5;
+  opacity: 0.3;
   transition: opacity var(--default-transition);
   cursor: pointer;
+  z-index: 1;
 
-  &:hover,
-  &:focus {
+  &:hover {
     opacity: 1;
   }
   &.left {
@@ -101,5 +96,17 @@ const moveSlider = (move: number) => {
   &.right {
     right: 0;
   }
+}
+.item-img {
+  width: 100%;
+  object-fit: cover;
+  /* visibility: hidden; */
+}
+.item-title {
+  color: var(--color-text);
+  background-color: var(--color-background);
+  position: absolute;
+  bottom: var(--large-spacing);
+  left: var(--large-spacing);
 }
 </style>
