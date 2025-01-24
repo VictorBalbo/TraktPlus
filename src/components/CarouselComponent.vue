@@ -1,25 +1,78 @@
 <script setup lang="ts">
 import type { Media } from '@/models'
-import { useTemplateRef } from 'vue'
+import { useTemplateRef, watch, watchEffect } from 'vue'
 
 const { items } = defineProps<{ items: Media[] }>()
-
-const slideItems = useTemplateRef('slider-item')
-const slider = useTemplateRef('slider')
+const slider = useTemplateRef<HTMLElement>('slider')
+const slides = useTemplateRef<HTMLElement[]>('slides')
 
 const moveSlider = (move: number) => {
-  if (slider.value && slideItems.value) {
+  if (slider.value) {
     const slideWidth = slider.value.firstElementChild?.clientWidth || 0
     slider.value.scrollLeft += move * slideWidth
   }
+}
+const slidesToCopy = 2
+watch([() => slides.value], () => {
+  if (!slides.value || slides.value.length < 2) {
+    return
+  }
+  // Clone first and last slides
+  slider.value?.scrollTo(0, 0)
+  for (let i = 0; i < slidesToCopy; i++) {
+    const leftSlideClone = slides.value[i].cloneNode(true)
+    const rightSlideClone = slides.value[slides.value.length - i - 1].cloneNode(true)
+    slider.value?.prepend(rightSlideClone)
+    slider.value?.append(leftSlideClone)
+  }
+
+  let scrollTimer: number
+  slider.value?.addEventListener('scroll', () => {
+    // Cancel if scroll continues
+    if (scrollTimer) {
+      clearTimeout(scrollTimer)
+    }
+    scrollTimer = setTimeout(() => {
+      const slideWidth = slides.value?.[0].clientWidth || 0
+      const slideQuatity = slides.value?.length || 0
+      if (slider.value && slider.value.scrollLeft < slideWidth * (slidesToCopy - 0.5)) {
+        jumpToEnd()
+      }
+      if (
+        slider.value &&
+        slider.value.scrollLeft > slideWidth * (slideQuatity + slidesToCopy - 0.5)
+      ) {
+        jumpToStart()
+      }
+    }, 100)
+  })
+})
+const jumpToStart = () => {
+  slider.value?.classList.remove('smooth-scroll')
+  // wait for smooth scroll to be disabled
+  setTimeout(() => {
+    const slideWidth = slides.value?.[0].clientWidth || 0
+    slider.value?.scrollTo(slideWidth * slidesToCopy, 0)
+    slider.value?.classList.add('smooth-scroll')
+  }, 10)
+}
+const jumpToEnd = () => {
+  slider.value?.classList.remove('smooth-scroll')
+  // wait for smooth scroll to be disabled
+  setTimeout(() => {
+    const slideWidth = slides.value?.[0].clientWidth || 0
+    const slideQuatity = slides.value?.length || 0
+    slider.value?.scrollTo(slideWidth * (slideQuatity + slidesToCopy - 1), 0)
+    slider.value?.classList.add('smooth-scroll')
+  }, 10)
 }
 </script>
 <template>
   <section class="carousel">
     <article class="controls left" @click="moveSlider(-1)">&#8249;</article>
     <article class="controls right" @click="moveSlider(+1)">&#8250;</article>
-    <section class="slider" ref="slider">
-      <article v-for="item in items" :key="item.title" class="slider-item" ref="slider-item">
+    <section class="slider smooth-scroll" ref="slider">
+      <article v-for="item in items" :key="item.title" class="slider-item" ref="slides">
         <img :src="item.images!.backdrops.file_path" class="item-img" />
         <h2 class="item-title">{{ item.title }}</h2>
       </article>
@@ -37,25 +90,22 @@ const moveSlider = (move: number) => {
   display: flex;
   overflow-x: auto;
   scroll-snap-type: both mandatory;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
+  &.smooth-scroll {
+    scroll-behavior: smooth;
+  }
 
   .slider-item {
     display: flex;
     flex-shrink: 0;
     width: 90%;
-    max-width: 1440px;
+    max-width: 720px;
     margin: 0 var(--small-spacing);
     scroll-snap-align: center;
+    scroll-snap-stop: always;
     overflow: hidden;
     position: relative;
     border-radius: var(--large-spacing);
-
-    &:first-child {
-      margin-left: 10%;
-    }
-    &:last-child {
-      margin-right: 10%;
-    }
   }
   @media (min-width: 1024px) {
     .slider-item {

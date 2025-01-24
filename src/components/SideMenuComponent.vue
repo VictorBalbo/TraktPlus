@@ -27,7 +27,7 @@ const menuItems: MenuItem[] = [
 </script>
 <template>
   <nav class="menu">
-    <Menu :model="menuItems"></Menu>
+    <!-- <Menu :model="menuItems"></Menu> -->
   </nav>
 </template>
 
