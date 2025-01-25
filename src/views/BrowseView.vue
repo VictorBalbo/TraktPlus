@@ -5,7 +5,6 @@ import { MediaService } from '@/services/MediaService'
 import { ref } from 'vue'
 const recommedations = ref<Media[]>([])
 const loadRecomendations = async () => {
-  console.log('load')
   recommedations.value = await MediaService.getRecommendations()
 }
 loadRecomendations()
