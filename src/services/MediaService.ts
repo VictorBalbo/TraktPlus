@@ -1,17 +1,16 @@
 import type { Media } from '@/models'
 import { useTraktStore } from '@/store/TracktStore'
+import { apiUrl } from '@/constants'
 
 export class MediaService {
-  private static apiUri = 'http://localhost:3000'
-
   static getRecommendations = async () => {
-    const url = `${MediaService.apiUri}/recommendations`
+    const url = `${apiUrl}/recommendations`
     const recommendations = await MediaService.sendApiGetRequest<Media[]>(url)
     return recommendations
   }
 
   static getTrending = async (type: 'movies' | 'shows') => {
-    const url = `${MediaService.apiUri}/${type}/trending`
+    const url = `${apiUrl}/${type}/trending`
     const trendings = await MediaService.sendApiGetRequest<Media[]>(url)
     return trendings
   }
