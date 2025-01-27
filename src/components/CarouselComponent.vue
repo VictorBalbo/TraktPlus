@@ -1,112 +1,77 @@
 <script setup lang="ts">
+import 'vue3-carousel/carousel.css'
+import { Carousel, Slide, Pagination, Navigation, type CarouselConfig } from 'vue3-carousel'
 import type { Media } from '@/models'
-import { useTemplateRef } from 'vue'
-
-const { items } = defineProps<{ items: Media[] }>()
-
-const slideItems = useTemplateRef('slider-item')
-const slider = useTemplateRef('slider')
-
-const moveSlider = (move: number) => {
-  if (slider.value && slideItems.value) {
-    const slideWidth = slider.value.firstElementChild?.clientWidth || 0
-    slider.value.scrollLeft += move * slideWidth
+const { items, type } = defineProps<{ items: Media[]; type: 'backdrops' | 'posters' }>()
+const getItemsToShow = () => {
+  if (window.innerWidth < 420) {
+    return 1.15
+  }
+  if (window.innerWidth < 640) {
+    return 1.25
+  }
+  if (window.innerWidth < 1080) {
+    return 1.5
+  }
+  if (window.innerWidth < 2160) {
+    return 2
+  }
+  return 3
+}
+let config: Partial<CarouselConfig> = {
+  gap: 16,
+}
+if (type === 'backdrops') {
+  config = {
+    ...config,
+    wrapAround: true,
+    pauseAutoplayOnHover: true,
+    autoplay: 5000,
+    itemsToShow: getItemsToShow(),
+    breakpointMode: 'carousel',
+  }
+} else if (type === 'posters') {
+  config = {
+    ...config,
+    wrapAround: false,
+    pauseAutoplayOnHover: false,
+    autoplay: 0,
+    itemsToShow: 'auto',
+    height: 200,
   }
 }
 </script>
 <template>
-  <section class="carousel">
-    <article class="controls left" @click="moveSlider(-1)">&#8249;</article>
-    <article class="controls right" @click="moveSlider(+1)">&#8250;</article>
-    <section class="slider" ref="slider">
-      <article v-for="item in items" :key="item.title" class="slider-item" ref="slider-item">
-        <img :src="item.images!.backdrops.file_path" class="item-img" />
-        <h2 class="item-title">{{ item.title }}</h2>
-      </article>
-    </section>
-  </section>
+  <Carousel v-bind="config" :class="type">
+    <Slide v-for="item in items" :key="item.title" class="slide">
+      <img :src="item.images?.[type].file_path" class="img" />
+    </Slide>
+
+    <template v-if="type === 'backdrops'" #addons>
+      <Navigation />
+      <Pagination />
+    </template>
+  </Carousel>
 </template>
 <style scoped>
-.carousel {
-  position: relative;
-  width: 100%;
-}
-.slider {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: both mandatory;
-  scroll-behavior: smooth;
-
-  .slider-item {
-    display: flex;
-    flex-shrink: 0;
-    width: 90%;
-    max-width: 1440px;
-    margin: 0 var(--small-spacing);
-    scroll-snap-align: center;
-    overflow: hidden;
-    position: relative;
-    border-radius: var(--large-spacing);
-
-    &:first-child {
-      margin-left: 10%;
-    }
-    &:last-child {
-      margin-right: 10%;
-    }
-  }
-  @media (min-width: 1024px) {
-    .slider-item {
-      background-color: red;
-    }
-  }
-
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-}
-.controls {
-  height: 3rem;
-  width: 3rem;
-  border-radius: 3rem;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto var(--large-spacing);
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-size: 3rem;
-  opacity: 0.3;
-  transition: opacity var(--default-transition);
-  cursor: pointer;
-  z-index: 1;
-
-  &:hover {
-    opacity: 1;
-  }
-  &.left {
-    left: 0;
-  }
-  &.right {
-    right: 0;
-  }
-}
-.item-img {
+.img {
   width: 100%;
   object-fit: cover;
-  /* visibility: hidden; */
+  border-radius: var(--large-spacing);
 }
-.item-title {
-  color: var(--color-text);
-  background-color: var(--color-background);
-  position: absolute;
-  bottom: var(--large-spacing);
-  left: var(--large-spacing);
+.posters .img {
+  height: 200px;
+}
+</style>
+<style>
+:root {
+  --vc-pgn-active-color: white;
+  --vc-pgn-background-color: rgba(0, 0, 0, 0.6);
+  --vc-pgn-border-radius: var(--small-spacing);
+  --vc-pgn-height: var(--small-spacing);
+  --vc-pgn-width: var(--large-spacing);
+}
+.carousel__pagination-button {
+  border: 1px solid rgba(255, 255, 255, 0.6);
 }
 </style>

@@ -7,7 +7,7 @@ import { SideMenuComponent } from '@/components'
   <div class="app">
     <header>Trakt Plus</header>
     <main class="main">
-      <SideMenuComponent />
+      <!-- <SideMenuComponent /> -->
 
       <RouterView class="view" />
     </main>
@@ -18,9 +18,8 @@ import { SideMenuComponent } from '@/components'
 .app {
   display: flex;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 
 .header {
