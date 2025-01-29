@@ -13,6 +13,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@egjs/flicking-plugins": "^4.7.1",
+    "@egjs/vue3-flicking": "^4.12.0",
     "@primevue/themes": "^4.2.5",
     "pinia": "^2.3.0",
     "primevue": "^4.2.5",

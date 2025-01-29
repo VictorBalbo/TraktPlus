@@ -9,7 +9,7 @@ export class MediaService {
     return recommendations
   }
 
-  static getTrending = async (type: 'movies' | 'shows') => {
+  static getTrending = async (type: 'movie' | 'show') => {
     const url = `${apiUrl}/${type}/trending`
     const trendings = await MediaService.sendApiGetRequest<Media[]>(url)
     return trendings
