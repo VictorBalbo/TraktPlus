@@ -1,4 +1,4 @@
-import type { Ids, Media, MediaType } from './Media'
+import type { Episode, Ids, Media, MediaType } from './Media'
 import type { Image, MediaImages } from './MediaImages'
 
-export type { Ids, Image, Media, MediaImages, MediaType }
+export type { Episode, Ids, Image, Media, MediaImages, MediaType }

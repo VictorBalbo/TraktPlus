@@ -8,6 +8,12 @@ export interface Media {
   images?: MediaImages
 }
 
+export interface Episode extends Media {
+  season: number
+  number: number
+  show: string
+}
+
 export interface Ids {
   trakt: number
   slug: string
