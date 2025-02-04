@@ -1,4 +1,11 @@
 import { MediaType, type MovieDetails, type Ratings } from '@/models'
+import imdbIcon from '@/assets/images/imdb.svg'
+import justwatchIcon from '@/assets/images/justwatch.svg'
+import rtFreshCertifiedIcon from '@/assets/images/rotten-tomatoes-fresh-certified.svg'
+import rtFreshIcon from '@/assets/images/rotten-tomatoes-fresh.svg'
+import rtRottenIcon from '@/assets/images/rotten-tomatoes-rotten.svg'
+import tmdbIcon from '@/assets/images/tmdb.svg'
+import traktIcon from '@/assets/images/trakt.svg'
 
 export class RatingService {
   static getMediaRatings = (media: MovieDetails) => {
@@ -41,7 +48,7 @@ export class RatingService {
       score: (media.scorings.traktScore * 10).toFixed(0),
       unit: '%',
       weblink: '',
-      icon: '/src/assets/images/trakt.svg',
+      icon: traktIcon,
     }
     if (media.type === MediaType.Movie) {
       trakt.weblink = `https://trakt.tv/movies/${media.ids.trakt}`
@@ -64,7 +71,7 @@ export class RatingService {
       score: media.scorings?.imdbScore.toFixed(1),
       unit: '/10',
       weblink: `https://www.imdb.com/title/${media.ids.imdb}`,
-      icon: '/src/assets/images/imdb.svg',
+      icon: imdbIcon,
     }
     return imdb
   }
@@ -77,7 +84,7 @@ export class RatingService {
       score: (media.scorings.tmdbScore * 10).toFixed(0),
       unit: '%',
       weblink: '',
-      icon: '/src/assets/images/tmdb.svg',
+      icon: tmdbIcon,
     }
     if (media.type === MediaType.Movie) {
       tmdb.weblink = `https://www.themoviedb.org/movie/${media.ids.tmdb}`
@@ -100,7 +107,7 @@ export class RatingService {
       score: (media.scorings.jwRating * 100).toFixed(0),
       unit: '%',
       weblink: '',
-      icon: '/src/assets/images/justwatch.svg',
+      icon: justwatchIcon,
     }
     if (media.type === MediaType.Movie) {
       justWatch.weblink = `https://www.justwatch.com${media.ids.justwatch ?? media.ids.slug}`
@@ -127,11 +134,11 @@ export class RatingService {
     }
 
     if (media.scorings.certifiedFresh) {
-      rottenTomatoes.icon = '/src/assets/images/rotten-tomatoes-fresh-certified.svg'
+      rottenTomatoes.icon = rtFreshCertifiedIcon
     } else if (parseInt(rottenTomatoes.score) >= 60) {
-      rottenTomatoes.icon = '/src/assets/images/rotten-tomatoes-fresh.svg'
+      rottenTomatoes.icon = rtFreshIcon
     } else {
-      rottenTomatoes.icon = '/src/assets/images/rotten-tomatoes-rotten.svg'
+      rottenTomatoes.icon = rtRottenIcon
     }
     return rottenTomatoes
   }
