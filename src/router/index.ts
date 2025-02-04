@@ -2,6 +2,7 @@ import { useTraktStore } from '@/store/TracktStore'
 import BrowseView from '@/views/BrowseView.vue'
 import LoginReturnView from '@/views/LoginReturnView.vue'
 import LoginView from '@/views/LoginView.vue'
+import MediaDetailView from '@/views/MediaDetailView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -11,6 +12,12 @@ const router = createRouter({
       path: '/',
       name: 'Browse',
       component: BrowseView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/:type(movie|show)/:id',
+      name: 'Detail',
+      component: MediaDetailView,
       meta: { requiresAuth: true },
     },
     {

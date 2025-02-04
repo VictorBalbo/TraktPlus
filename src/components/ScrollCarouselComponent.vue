@@ -23,15 +23,17 @@ const swiperOptions = ref<SwiperOptions>({
 <template>
   <swiper-container v-bind="swiperOptions">
     <swiper-slide v-for="item in items" :key="item.ids.trakt" class="slide" lazy="true">
-      <img
-        v-if="!$slots.default"
-        :src="getImageSrc(item.images?.posters ?? item.images?.stills)"
-        :srcset="getImageSrcSet(item.images?.posters ?? item.images?.stills)"
-        sizes="(max-width: 720px) 100px, 150px"
-        class="img"
-        :title="item.title"
-      />
-      <slot v-else v-bind="item"></slot>
+      <RouterLink :to="{ name: 'Detail', params: { type: item.type, id: item.ids.trakt } }">
+        <img
+          v-if="!$slots.default"
+          :src="getImageSrc(item.images?.posters ?? item.images?.stills)"
+          :srcset="getImageSrcSet(item.images?.posters ?? item.images?.stills)"
+          sizes="(max-width: 720px) 100px, 150px"
+          class="img"
+          :title="item.title"
+        />
+        <slot v-else v-bind="item"></slot>
+      </RouterLink>
     </swiper-slide>
   </swiper-container>
 </template>

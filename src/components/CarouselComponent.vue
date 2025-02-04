@@ -41,12 +41,14 @@ const swiperOptions = ref<SwiperOptions>({
 <template>
   <swiper-container v-bind="swiperOptions">
     <swiper-slide v-for="item in items" :key="item.ids.trakt" class="slide">
-      <img
-        :src="getImageSrc(item.images?.backdrops)"
-        :srcset="getImageSrcSet(item.images?.backdrops)"
-        class="img"
-        :title="item.title"
-      />
+      <RouterLink :to="{ name: 'Detail', params: { type: item.type, id: item.ids.trakt } }">
+        <img
+          :src="getImageSrc(item.images?.backdrops)"
+          :srcset="getImageSrcSet(item.images?.backdrops)"
+          class="img"
+          :title="item.title"
+        />
+      </RouterLink>
     </swiper-slide>
   </swiper-container>
 </template>
