@@ -6,12 +6,7 @@ export interface Media {
   ids: Ids
   type: MediaType
   images?: MediaImages
-}
-
-export interface Episode extends Media {
-  season: number
-  number: number
-  show: string
+  scorings?: Scorings
 }
 
 export interface Ids {
@@ -19,6 +14,18 @@ export interface Ids {
   slug: string
   imdb: string
   tmdb: number
+  justwatch?: string
+}
+
+export interface Scorings {
+  traktScore?: number
+  traktVotes?: number
+  imdbScore?: number
+  imdbVotes?: number
+  tmdbScore?: number
+  jwRating?: number
+  tomatoMeter?: number
+  certifiedFresh?: boolean
 }
 
 export enum MediaType {

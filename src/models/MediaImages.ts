@@ -20,5 +20,11 @@ export const getImageSrc = (image?: Image) =>
 
 export const getImageSrcSet = (image?: Image) =>
   image?.sizes
-    .map((s) => `${image?.base_path}/${s}${image?.file_path} ${s.replace('w', '')}w`)
+    .map((s) => {
+      if (s === 'original') {
+        return `${image?.base_path}/${s}${image?.file_path} `
+      } else {
+        return `${image?.base_path}/${s}${image?.file_path} ${s.replace('w', '')}w`
+      }
+    })
     .join(', ')
