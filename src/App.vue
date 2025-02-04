@@ -26,6 +26,7 @@ import { SideMenuComponent } from '@/components'
 }
 
 .main {
+  height: 100%;
   display: flex;
   flex-direction: row;
   .view {
