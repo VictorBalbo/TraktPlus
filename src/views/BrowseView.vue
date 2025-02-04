@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-import type { Episode, Media } from '@/models'
+import type { EpisodeDetails, Media } from '@/models'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import { MediaService } from '@/services'
 import { Carousel, ScrollCarousel } from '@/components'
@@ -8,7 +8,7 @@ import { Carousel, ScrollCarousel } from '@/components'
 const recommendations = ref<Media[]>()
 const trendingMovies = ref<Media[]>()
 const trendingShows = ref<Media[]>()
-const upNext = ref<Episode[]>()
+const upNext = ref<EpisodeDetails[]>()
 const watchlist = ref<Media[]>()
 
 const loadContent = async <T,>(variable: Ref<T>, responsePromise: Promise<T>) => {
@@ -25,7 +25,7 @@ loadContent(watchlist, MediaService.getWatchlist())
   <section>
     <Carousel v-if="recommendations" :items="recommendations" />
     <article v-if="upNext" class="content-article">
-      <h1>Up Next</h1>
+      <h2>Up Next</h2>
       <ScrollCarousel :items="upNext" class="up-next">
         <template #default="item">
           <img
@@ -36,27 +36,27 @@ loadContent(watchlist, MediaService.getWatchlist())
             :title="item.show"
           />
           <article class="episode-titles">
-            <h2 class="elipsis">{{ item.show }}</h2>
-            <h4 class="elipsis">
+            <p class="elipsis">{{ item.show }}</p>
+            <small class="elipsis">
               {{ item.season }}x{{ item.number.toString().padStart(2, '0') }} - {{ item.title }}
-            </h4>
+            </small>
           </article>
         </template>
       </ScrollCarousel>
     </article>
 
     <article v-if="watchlist" class="content-article">
-      <h1>Watchlist</h1>
+      <h2>Watchlist</h2>
       <ScrollCarousel :items="watchlist" />
     </article>
 
     <article v-if="trendingMovies" class="content-article">
-      <h1>Trending Movies</h1>
+      <h2>Trending Movies</h2>
       <ScrollCarousel :items="trendingMovies" />
     </article>
 
     <article v-if="trendingShows" class="content-article">
-      <h1>Trending TV Shows</h1>
+      <h2>Trending TV Shows</h2>
       <ScrollCarousel :items="trendingShows" />
     </article>
   </section>
@@ -86,6 +86,7 @@ loadContent(watchlist, MediaService.getWatchlist())
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    display: block;
   }
 }
 </style>
