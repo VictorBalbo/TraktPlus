@@ -4,6 +4,7 @@ import { MediaService, RatingService } from '@/services'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
+import dayjs from 'dayjs'
 
 const route = useRoute()
 const mediaType = route.params.type as MediaType
@@ -15,8 +16,33 @@ const loadMedia = async () => {
   media.value = await MediaService.getMediaDetail(mediaType, mediaId)
   ratings.value = RatingService.getMediaRatings(media.value)
 }
-
 loadMedia()
+
+const getDisplayTime = (totalMinutes: number) => {
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
+
+  if (hours === 0) {
+    return `${minutes} m`
+  } else if (minutes === 0) {
+    return `${hours} h`
+  } else {
+    return `${hours}h ${minutes}m`
+  }
+}
+
+const getDisplayProviderType = (providerType: string) => {
+  switch (providerType.toLowerCase()) {
+    case 'flatrate':
+      return 'Stream'
+    case 'cinema':
+      return 'Cinema'
+    case 'rent':
+      return 'Rent'
+    case 'buy':
+      return 'Buy'
+  }
+}
 </script>
 
 <template>
@@ -35,6 +61,7 @@ loadMedia()
           :srcset="getImageSrcSet(media?.images?.posters)"
           :alt="media?.title"
           :title="media?.title"
+          sizes="200px"
           class="poster"
         />
       </aside>
@@ -53,6 +80,29 @@ loadMedia()
               <small class="unit">{{ rating.unit }} </small>
             </p>
           </a>
+        </section>
+        <section class="info-section">
+          <h3>
+            {{ getDisplayTime(media?.runtime ?? 0) }}
+          </h3>
+          <p>
+            {{ media?.genres.map((g) => `${g[0].toUpperCase()}${g.slice(1)}`).join(', ') }}
+          </p>
+          <small> Released on {{ dayjs(media?.released).format('DD/MM/YYYY') }} </small>
+        </section>
+        <section class="info-section">
+          <b>Where to Watch</b>
+          <article class="providers-section">
+            <a
+              v-for="provider in media?.providers"
+              :key="provider.provider.name"
+              :href="provider.providerUri"
+              class="provider"
+            >
+              <img :src="`https://images.justwatch.com/${provider.provider.icon}`" />
+              <small>{{ getDisplayProviderType(provider.monetizationType) }}</small>
+            </a>
+          </article>
         </section>
       </main>
     </section>
@@ -105,11 +155,32 @@ loadMedia()
       margin-right: var(--large-spacing);
       display: flex;
       align-items: center;
-      color: var(--color-text);
 
       img {
         height: 1.5rem;
         margin: 0 var(--small-spacing);
+      }
+    }
+  }
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-background-soft);
+    border-radius: var(--large-spacing);
+    padding: var(--small-spacing) var(--large-spacing);
+    margin: var(--small-spacing) 0;
+  }
+  .providers-section {
+    display: flex;
+    margin-top: var(--small-spacing);
+    .provider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: var(--large-spacing);
+      img {
+        width: 75px;
+        border-radius: var(--small-spacing);
       }
     }
   }

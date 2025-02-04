@@ -38,7 +38,6 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
 }
 
 body {
@@ -73,6 +72,12 @@ h2 {
 }
 
 h3 {
+  color: var(--color-header);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+h4 {
   color: var(--color-subheader);
   font-size: 1.25rem;
   font-weight: 600;
@@ -81,9 +86,14 @@ h3 {
 p {
   color: var(--color-text);
 }
+
 small {
   color: var(--color-subheader);
   font-size: 0.875rem;
+  font-weight: 600;
+}
+
+b {
   font-weight: 600;
 }
 

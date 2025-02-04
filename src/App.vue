@@ -5,7 +5,7 @@ import { SideMenuComponent } from '@/components'
 
 <template>
   <div class="app">
-    <header>Trakt Plus</header>
+    <!-- <header>Trakt Plus</header> -->
     <main class="main">
       <!-- <SideMenuComponent /> -->
 

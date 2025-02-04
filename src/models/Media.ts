@@ -1,4 +1,4 @@
-import type { MediaImages } from '@/models'
+import type { MediaImages, WatchProvider } from '@/models'
 
 export interface Media {
   title: string
@@ -6,6 +6,7 @@ export interface Media {
   ids: Ids
   type: MediaType
   images?: MediaImages
+  providers: WatchProvider[]
   scorings?: Scorings
 }
 
