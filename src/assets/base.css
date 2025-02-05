@@ -101,3 +101,26 @@ a {
   color: var(--color-link);
   text-decoration: none;
 }
+
+blockquote {
+  text-align: center;
+  font-style: italic;
+  font-weight: 500;
+}
+blockquote:before {
+  content: open-quote;
+  font-size: 2rem;
+  color: var(--color-subheader);
+  margin-right: var(--small-spacing);
+  font-family: serif;
+  font-weight: 600;
+}
+
+blockquote:after {
+  content: close-quote;
+  font-size: 2rem;
+  color: var(--color-subheader);
+  margin-left: var(--small-spacing);
+  font-family: serif;
+  font-weight: 600;
+}

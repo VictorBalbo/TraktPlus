@@ -82,6 +82,13 @@ const getDisplayProviderType = (providerType: string) => {
           </a>
         </section>
         <section class="info-section">
+          <h3 v-if="!media?.tagline">Description</h3>
+          <blockquote v-else>{{ media.tagline }}</blockquote>
+          <p>
+            {{ media?.overview }}
+          </p>
+        </section>
+        <section class="info-section">
           <h3>
             {{ getDisplayTime(media?.runtime ?? 0) }}
           </h3>
@@ -131,7 +138,7 @@ const getDisplayProviderType = (providerType: string) => {
 .side-info {
   width: 200px;
   flex: auto 0 0;
-  margin-top: -150px;
+  margin-top: -8rem;
   padding: 0 var(--small-spacing);
   z-index: 1;
   .poster {
