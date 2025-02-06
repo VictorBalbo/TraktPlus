@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import dayjs from 'dayjs'
 import { PeopleHorizontalScroll } from '@/components'
+import { ShowStatus } from '@/models/MediaDetails/ShowDetails'
 
 const route = useRoute()
 const mediaType = route.params.type as MediaType
@@ -53,6 +54,25 @@ const getDisplayProviderType = (providerType: string) => {
       return 'Buy'
   }
 }
+
+const getShowStatusType = (showStatus: ShowStatus) => {
+  switch (showStatus) {
+    case ShowStatus.Continuing:
+    case ShowStatus.ReturningSearies:
+      return 'Airing'
+    case ShowStatus.InProduction:
+      return 'In Production'
+    case ShowStatus.Upcoming:
+    case ShowStatus.Planned:
+      return 'In Development'
+    case ShowStatus.Pilot:
+      return 'Pilor'
+    case ShowStatus.Canceled:
+      return 'Canceled'
+    case ShowStatus.Ended:
+      return 'Ended'
+  }
+}
 </script>
 
 <template>
@@ -96,14 +116,30 @@ const getDisplayProviderType = (providerType: string) => {
             {{ getDisplayTime(media?.runtime ?? 0) }}
           </h3>
           <p>
+            <small> Genres: </small>
             {{ media?.genres.map((g) => `${g[0].toUpperCase()}${g.slice(1)}`).join(', ') }}
           </p>
-          <small v-if="media?.type === MediaType.Movie">
-            Released on {{ dayjs(media.released).format('DD/MM/YYYY') }}
-          </small>
-          <small v-if="media?.type === MediaType.Show">
-            First aired on {{ dayjs(media.first_aired).format('DD/MM/YYYY') }}
-          </small>
+          <p v-if="media?.type === MediaType.Movie && media.people?.crew.directing">
+            <small> Directed by </small>
+            {{ media.people?.crew.directing?.map((c) => c.person.name).join(', ') }}
+          </p>
+          <p v-if="media?.type === MediaType.Movie && media.released">
+            <small> Released on </small>
+            {{ dayjs(media.released).format('MMM DD, YYYY') }}
+          </p>
+          <p v-if="media?.type === MediaType.Show && media.people?.crew['created by']">
+            <small> Created by </small>
+            {{ media.people?.crew['created by']?.map((c) => c.person.name).join(', ') }}
+          </p>
+          <p v-if="media?.type === MediaType.Show">
+            <small> First aired on </small>{{ media.network }}
+            <small> in </small>
+            {{ dayjs(media.first_aired).format('MMM YYYY') }}
+          </p>
+          <p v-if="media?.type === MediaType.Show">
+            <small> Show is </small>
+            {{ getShowStatusType(media?.status) }}
+          </p>
         </section>
         <section class="info-section">
           <h3 v-if="!media?.tagline">Description</h3>

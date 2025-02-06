@@ -13,7 +13,7 @@ export interface ShowDetails extends Media {
   country: string
   trailer: string
   homepage: string
-  status: string
+  status: ShowStatus
   genres: string[]
   aired_episodes: number
   seasons?: SeasonDetails[]
@@ -23,4 +23,15 @@ interface Airs {
   day: string
   time: string
   timezone: string
+}
+
+export enum ShowStatus {
+  ReturningSearies = 'returning series',
+  Continuing = 'continuing',
+  InProduction = 'in production',
+  Planned = 'planned',
+  Upcoming = 'upcoming',
+  Pilot = 'pilot',
+  Canceled = 'canceled',
+  Ended = 'ended',
 }
