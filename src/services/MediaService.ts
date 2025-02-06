@@ -1,4 +1,4 @@
-import { MediaType, type EpisodeDetails, type Media, type MovieDetails } from '@/models'
+import { MediaType, type EpisodeDetails, type Media } from '@/models'
 import { useTraktStore } from '@/store/TracktStore'
 import { apiUrl } from '@/constants'
 
@@ -26,7 +26,7 @@ export class MediaService {
     return watchlist
   }
 
-  static getMediaDetail = async (
+  static getMediaDetail = async <T>(
     mediaType: MediaType,
     id: string,
     seasonId?: string,
@@ -39,7 +39,7 @@ export class MediaService {
     if (mediaType === MediaType.Episode && seasonId && episodeId) {
       url += `/${seasonId}/${episodeId}`
     }
-    const watchlist = await MediaService.sendApiGetRequest<MovieDetails>(url)
+    const watchlist = await MediaService.sendApiGetRequest<T>(url)
     return watchlist
   }
 

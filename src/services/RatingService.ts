@@ -1,4 +1,4 @@
-import { MediaType, type MovieDetails, type Ratings } from '@/models'
+import { MediaType, type Media, type Ratings } from '@/models'
 import imdbIcon from '@/assets/images/imdb.svg'
 import justwatchIcon from '@/assets/images/justwatch.svg'
 import rtFreshCertifiedIcon from '@/assets/images/rotten-tomatoes-fresh-certified.svg'
@@ -8,7 +8,7 @@ import tmdbIcon from '@/assets/images/tmdb.svg'
 import traktIcon from '@/assets/images/trakt.svg'
 
 export class RatingService {
-  static getMediaRatings = (media: MovieDetails) => {
+  static getMediaRatings = (media: Media) => {
     const ratings = []
 
     const trakt = RatingService.getTraktRating(media)
@@ -39,7 +39,7 @@ export class RatingService {
     return ratings
   }
 
-  private static getTraktRating(media: MovieDetails) {
+  private static getTraktRating(media: Media) {
     if (!media.scorings?.traktScore) {
       return
     }
@@ -62,7 +62,7 @@ export class RatingService {
     return trakt
   }
 
-  private static getImdbRating(media: MovieDetails) {
+  private static getImdbRating(media: Media) {
     if (!media.scorings?.imdbScore) {
       return
     }
@@ -75,7 +75,7 @@ export class RatingService {
     }
     return imdb
   }
-  private static getTmdbRating(media: MovieDetails) {
+  private static getTmdbRating(media: Media) {
     if (!media.scorings?.tmdbScore) {
       return
     }
@@ -98,7 +98,7 @@ export class RatingService {
     return tmdb
   }
 
-  private static getJustWatchRating(media: MovieDetails) {
+  private static getJustWatchRating(media: Media) {
     if (!media.scorings?.jwRating) {
       return
     }
@@ -121,7 +121,7 @@ export class RatingService {
     return justWatch
   }
 
-  private static getRottenTomatoesRating = (media: MovieDetails) => {
+  private static getRottenTomatoesRating = (media: Media) => {
     if (!media.scorings?.tomatoMeter) {
       return
     }

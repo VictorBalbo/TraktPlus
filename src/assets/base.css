@@ -120,7 +120,7 @@ blockquote:after {
   content: close-quote;
   font-size: 2rem;
   color: var(--color-subheader);
-  margin-left: var(--small-spacing);
+  margin-left: 0.25rem;
   font-family: serif;
   font-weight: 600;
 }

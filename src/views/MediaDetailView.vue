@@ -1,22 +1,32 @@
-<script setup lang="ts">
-import { MediaType, type MovieDetails, type Ratings } from '@/models'
+<script setup lang="ts" generic="T extends MovieDetails | ShowDetails">
+import { MediaType, type MovieDetails, type Ratings, type ShowDetails } from '@/models'
 import { MediaService, RatingService } from '@/services'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import dayjs from 'dayjs'
+import { PeopleHorizontalScroll } from '@/components'
 
 const route = useRoute()
 const mediaType = route.params.type as MediaType
 const mediaId = route.params.id as string
-const media = ref<MovieDetails>()
+const media = ref<T>()
 const ratings = ref<Ratings[]>()
 
 const loadMedia = async () => {
   media.value = await MediaService.getMediaDetail(mediaType, mediaId)
-  ratings.value = RatingService.getMediaRatings(media.value)
+  if (media.value) {
+    ratings.value = RatingService.getMediaRatings(media.value)
+  }
 }
 loadMedia()
+
+const people = computed(() => [
+  ...(media.value?.people?.cast ?? []),
+  ...(media.value?.people?.crew['created by'] ?? []),
+  ...(media.value?.people?.crew.directing ?? []),
+  ...(media.value?.people?.crew.writing ?? []),
+])
 
 const getDisplayTime = (totalMinutes: number) => {
   const hours = Math.floor(totalMinutes / 60)
@@ -82,20 +92,25 @@ const getDisplayProviderType = (providerType: string) => {
           </a>
         </section>
         <section class="info-section">
-          <h3 v-if="!media?.tagline">Description</h3>
-          <blockquote v-else>{{ media.tagline }}</blockquote>
-          <p>
-            {{ media?.overview }}
-          </p>
-        </section>
-        <section class="info-section">
           <h3>
             {{ getDisplayTime(media?.runtime ?? 0) }}
           </h3>
           <p>
             {{ media?.genres.map((g) => `${g[0].toUpperCase()}${g.slice(1)}`).join(', ') }}
           </p>
-          <small> Released on {{ dayjs(media?.released).format('DD/MM/YYYY') }} </small>
+          <small v-if="media?.type === MediaType.Movie">
+            Released on {{ dayjs(media.released).format('DD/MM/YYYY') }}
+          </small>
+          <small v-if="media?.type === MediaType.Show">
+            First aired on {{ dayjs(media.first_aired).format('DD/MM/YYYY') }}
+          </small>
+        </section>
+        <section class="info-section">
+          <h3 v-if="!media?.tagline">Description</h3>
+          <blockquote v-else>{{ media.tagline }}</blockquote>
+          <p>
+            {{ media?.overview }}
+          </p>
         </section>
         <section class="info-section">
           <b>Where to Watch</b>
@@ -110,6 +125,9 @@ const getDisplayProviderType = (providerType: string) => {
               <small>{{ getDisplayProviderType(provider.monetizationType) }}</small>
             </a>
           </article>
+        </section>
+        <section v-if="media?.people" class="info-section people-section">
+          <PeopleHorizontalScroll :items="people" />
         </section>
       </main>
     </section>
@@ -187,9 +205,12 @@ const getDisplayProviderType = (providerType: string) => {
       margin-right: var(--large-spacing);
       img {
         width: 75px;
-        border-radius: var(--small-spacing);
+        border-radius: var(--large-spacing);
       }
     }
+  }
+  .people-section {
+    padding: var(--small-spacing) 0;
   }
 }
 </style>
