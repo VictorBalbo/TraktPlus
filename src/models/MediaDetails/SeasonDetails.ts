@@ -1,7 +1,8 @@
 import type { EpisodeDetails } from './EpisodeDetails'
-import type { Media } from '..'
+import type { Media, MediaType } from '..'
 
 export interface SeasonDetails extends Media {
+  type: MediaType.Season
   number: number
   episode_count?: number
   aired_episodes?: number

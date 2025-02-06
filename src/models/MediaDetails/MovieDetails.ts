@@ -1,6 +1,7 @@
-import type { Media } from '..'
+import type { Media, MediaType } from '..'
 
 export interface MovieDetails extends Media {
+  type: MediaType.Movie
   tagline: string
   overview: string
   released: string

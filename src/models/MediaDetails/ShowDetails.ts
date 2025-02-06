@@ -1,7 +1,8 @@
 import type { SeasonDetails } from './SeasonDetails'
-import type { Media } from '..'
+import type { Media, MediaType } from '..'
 
 export interface ShowDetails extends Media {
+  type: MediaType.Show
   tagline: string
   overview: string
   first_aired: string
