@@ -9,4 +9,5 @@ import SideMenuComponent from './SideMenuComponent.vue'
 export { Carousel, PeopleHorizontalScroll, ScrollCarousel, SideMenuComponent }
 
 import Avatar from 'primevue/avatar'
-export { Avatar }
+import Tag from 'primevue/tag'
+export { Avatar, Tag }

@@ -5,7 +5,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import dayjs from 'dayjs'
-import { PeopleHorizontalScroll } from '@/components'
+import { PeopleHorizontalScroll, Tag } from '@/components'
 import { ShowStatus } from '@/models/MediaDetails/ShowDetails'
 
 const route = useRoute()
@@ -96,10 +96,11 @@ const getShowStatusType = (showStatus: ShowStatus) => {
         />
       </aside>
       <main class="main-info">
-        <article class="title">
-          <h1>
+        <article>
+          <h1 class="title">
             {{ media?.title }}
             <span class="subtitle">{{ media?.year }}</span>
+            <Tag v-if="media?.certification" :value="media?.certification" class="certification" />
           </h1>
         </article>
         <section class="ratings">
@@ -205,10 +206,21 @@ const getShowStatusType = (showStatus: ShowStatus) => {
   margin-top: -4rem;
   z-index: 1;
 
+  .title {
+    margin-bottom: var(--small-spacing);
+  }
+
   .subtitle {
     color: var(--color-subheader);
     font-size: 1.25rem;
     font-weight: 600;
+  }
+  .certification {
+    margin-left: var(--small-spacing);
+    --p-tag-primary-background: #00000066;
+    --p-tag-primary-color: var(--color-subheader);
+    --p-tag-padding: 0 0.5rem;
+    border: 1px solid var(--color-subheader);
   }
   .ratings {
     display: flex;
