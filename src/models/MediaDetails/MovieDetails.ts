@@ -1,16 +1,13 @@
-import type { Media, MediaType } from '..'
+import type { MediaDetails, MediaType } from '..'
+import type { MovieStatus } from './MediaDetails'
 
-export interface MovieDetails extends Media {
+export interface MovieDetails extends MediaDetails {
   type: MediaType.Movie
-  tagline: string
-  overview: string
-  released: string
   runtime: number
   country: string
   trailer: string
   homepage: string
-  status: string
   language: string
-  genres: string[]
   certification: string
+  status: MovieStatus
 }

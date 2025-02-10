@@ -6,16 +6,19 @@ import { useRoute } from 'vue-router'
 import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import dayjs from 'dayjs'
 import { PeopleHorizontalScroll, Tag } from '@/components'
-import { ShowStatus } from '@/models/MediaDetails/ShowDetails'
+import { MovieStatus, ShowStatus } from '@/models/MediaDetails/MediaDetails'
+import ScrollCarouselComponent from '@/components/ScrollCarouselComponent.vue'
 
 const route = useRoute()
-const mediaType = route.params.type as MediaType
-const mediaId = route.params.id as string
 const media = ref<T>()
 const ratings = ref<Ratings[]>()
 
 const loadMedia = async () => {
-  media.value = await MediaService.getMediaDetail(mediaType, mediaId)
+  const mediaType = route.params.type as MediaType
+  const mediaId = route.params.id as string
+  const seasonId = route.params.seasonId as string
+
+  media.value = await MediaService.getMediaDetail(mediaType, mediaId, seasonId)
   if (media.value) {
     ratings.value = RatingService.getMediaRatings(media.value)
   }
@@ -23,10 +26,10 @@ const loadMedia = async () => {
 loadMedia()
 
 const people = computed(() => [
-  ...(media.value?.people?.cast ?? []),
-  ...(media.value?.people?.crew['created by'] ?? []),
-  ...(media.value?.people?.crew.directing ?? []),
-  ...(media.value?.people?.crew.writing ?? []),
+  ...(media.value?.credits?.cast ?? []),
+  ...(media.value?.credits?.crew['created by'] ?? []),
+  ...(media.value?.credits?.crew.directing ?? []),
+  ...(media.value?.credits?.crew.writing ?? []),
 ])
 
 const getDisplayTime = (totalMinutes: number) => {
@@ -55,22 +58,31 @@ const getDisplayProviderType = (providerType: string) => {
   }
 }
 
-const getShowStatusType = (showStatus: ShowStatus) => {
+const getDisplayMediaStatus = (showStatus: MovieStatus | ShowStatus) => {
   switch (showStatus) {
     case ShowStatus.Continuing:
     case ShowStatus.ReturningSearies:
       return 'Airing'
     case ShowStatus.InProduction:
+    case MovieStatus.InProduction:
       return 'In Production'
     case ShowStatus.Upcoming:
     case ShowStatus.Planned:
+    case MovieStatus.Planned:
       return 'In Development'
     case ShowStatus.Pilot:
-      return 'Pilor'
+      return 'In Pilot'
     case ShowStatus.Canceled:
+    case MovieStatus.Canceled:
       return 'Canceled'
     case ShowStatus.Ended:
       return 'Ended'
+    case MovieStatus.Released:
+      return 'Released'
+    case MovieStatus.PostProduction:
+      return 'In Post Production'
+    case MovieStatus.Rumored:
+      return 'Rumored'
   }
 }
 </script>
@@ -78,8 +90,8 @@ const getShowStatusType = (showStatus: ShowStatus) => {
 <template>
   <section>
     <img
-      :src="getImageSrc(media?.images?.backdrops)"
-      :srcset="getImageSrcSet(media?.images?.backdrops)"
+      :src="getImageSrc(media?.images, 'backdrop')"
+      :srcset="getImageSrcSet(media?.images, 'backdrop')"
       :alt="media?.title"
       :title="media?.title"
       class="banner"
@@ -87,8 +99,8 @@ const getShowStatusType = (showStatus: ShowStatus) => {
     <section class="media-info">
       <aside class="side-info">
         <img
-          :src="getImageSrc(media?.images?.posters)"
-          :srcset="getImageSrcSet(media?.images?.posters)"
+          :src="getImageSrc(media?.images, 'poster')"
+          :srcset="getImageSrcSet(media?.images, 'poster')"
           :alt="media?.title"
           :title="media?.title"
           sizes="200px"
@@ -99,7 +111,7 @@ const getShowStatusType = (showStatus: ShowStatus) => {
         <article>
           <h1 class="title">
             {{ media?.title }}
-            <span class="subtitle">{{ media?.year }}</span>
+            <span class="subtitle">{{ dayjs(media?.released).format('YYYY') }}</span>
             <Tag v-if="media?.certification" :value="media?.certification" class="certification" />
           </h1>
         </article>
@@ -116,30 +128,48 @@ const getShowStatusType = (showStatus: ShowStatus) => {
           <h3>
             {{ getDisplayTime(media?.runtime ?? 0) }}
           </h3>
-          <p>
+          <p v-if="media?.type === MediaType.Show && media.aired_episodes">
+            <small> Episodes Aired: </small>
+            {{ media.aired_episodes }}
+          </p>
+
+          <p v-if="media?.genres?.length">
             <small> Genres: </small>
-            {{ media?.genres.map((g) => `${g[0].toUpperCase()}${g.slice(1)}`).join(', ') }}
+            {{ media?.genres?.map((g) => `${g[0].toUpperCase()}${g.slice(1)}`).join(', ') }}
           </p>
-          <p v-if="media?.type === MediaType.Movie && media.people?.crew.directing">
+
+          <p v-if="media?.type === MediaType.Movie && media.credits?.crew.directing">
             <small> Directed by </small>
-            {{ media.people?.crew.directing?.map((c) => c.person.name).join(', ') }}
+            {{ media.credits?.crew.directing?.map((c) => c.person.name).join(', ') }}
           </p>
+          <p v-if="media?.type === MediaType.Show && media.credits?.crew['created by']">
+            <small> Created by </small>
+            {{ media.credits?.crew['created by']?.map((c) => c.person.name).join(', ') }}
+          </p>
+
           <p v-if="media?.type === MediaType.Movie && media.released">
-            <small> Released on </small>
+            <small>
+              {{ media.status === MovieStatus.Released ? 'Released on' : 'Premieres on' }}
+            </small>
             {{ dayjs(media.released).format('MMM DD, YYYY') }}
           </p>
-          <p v-if="media?.type === MediaType.Show && media.people?.crew['created by']">
-            <small> Created by </small>
-            {{ media.people?.crew['created by']?.map((c) => c.person.name).join(', ') }}
-          </p>
-          <p v-if="media?.type === MediaType.Show">
-            <small> First aired on </small>{{ media.network }}
+          <p v-if="media?.type === MediaType.Show && media.released">
+            <small>
+              {{
+                media.status === ShowStatus.Continuing ||
+                media.status === ShowStatus.ReturningSearies
+                  ? 'First aired on'
+                  : 'Premieres on'
+              }}
+            </small>
+            {{ media.network }}
             <small> in </small>
-            {{ dayjs(media.first_aired).format('MMM YYYY') }}
+            {{ dayjs(media.released).format('MMM DD, YYYY') }}
           </p>
-          <p v-if="media?.type === MediaType.Show">
-            <small> Show is </small>
-            {{ getShowStatusType(media?.status) }}
+
+          <p v-if="media?.status">
+            <small> {{ media?.type === MediaType.Show ? 'Show' : 'Movie' }} is </small>
+            {{ getDisplayMediaStatus(media?.status) }}
           </p>
         </section>
         <section class="info-section">
@@ -150,7 +180,7 @@ const getShowStatusType = (showStatus: ShowStatus) => {
           </p>
         </section>
         <section class="info-section">
-          <b>Where to Watch</b>
+          <h3>Where to Watch</h3>
           <article class="providers-section">
             <a
               v-for="provider in media?.providers"
@@ -161,9 +191,34 @@ const getShowStatusType = (showStatus: ShowStatus) => {
               <img :src="`https://images.justwatch.com/${provider.provider.icon}`" />
               <small>{{ getDisplayProviderType(provider.monetizationType) }}</small>
             </a>
+            <p v-if="!media?.providers?.length">
+              <b>{{ media?.title }}</b> is not available anywhere now
+            </p>
           </article>
         </section>
-        <section v-if="media?.people" class="info-section people-section">
+        <section
+          v-if="media?.type === MediaType.Show && media.seasons?.length"
+          class="info-section seasons-section"
+        >
+          <h3>Seasons</h3>
+          <ScrollCarouselComponent :items="media.seasons" :showId="media.ids.trakt">
+            <template #default="season">
+              <img
+                :src="getImageSrc(season.images, 'poster')"
+                :srcset="getImageSrcSet(season.images, 'poster')"
+                sizes="(max-width: 720px) 100px, 150px"
+                class="img"
+                :title="season.title"
+              />
+              <article class="season-title">
+                {{ season.title }}
+                <small v-if="season.episode_count"> {{ season.episode_count }} Episodes</small>
+              </article>
+            </template>
+          </ScrollCarouselComponent>
+        </section>
+        <section v-if="media?.credits" class="info-section people-section">
+          <h3>Cast and Crew</h3>
           <PeopleHorizontalScroll :items="people" />
         </section>
       </main>
@@ -257,8 +312,19 @@ const getShowStatusType = (showStatus: ShowStatus) => {
       }
     }
   }
-  .people-section {
-    padding: var(--small-spacing) 0;
+  .seasons-section {
+    .img {
+      border-radius: var(--large-spacing);
+      width: 100%;
+      aspect-ratio: 2/3;
+      height: 100%;
+    }
+    .season-title {
+      color: var(--color-text);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 </style>

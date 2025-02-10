@@ -1,6 +1,6 @@
 import type { Ids } from './Media'
 
-export interface People {
+export interface Credits {
   cast: CastCrewMember[]
   crew: Crew
 }

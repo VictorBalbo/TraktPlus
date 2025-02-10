@@ -26,8 +26,8 @@ const swiperOptions = ref<SwiperOptions>({
       <RouterLink :to="{ name: 'Detail', params: { type: item.type, id: item.ids.trakt } }">
         <img
           v-if="!$slots.default"
-          :src="getImageSrc(item.images?.posters ?? item.images?.stills)"
-          :srcset="getImageSrcSet(item.images?.posters ?? item.images?.stills)"
+          :src="getImageSrc(item.images, item.images?.poster ? 'poster' : 'still')"
+          :srcset="getImageSrcSet(item.images, item.images?.poster ? 'poster' : 'still')"
           sizes="(max-width: 720px) 100px, 150px"
           class="img"
           :title="item.title"
@@ -40,7 +40,7 @@ const swiperOptions = ref<SwiperOptions>({
 <style scoped>
 .slide {
   width: 150px;
-  height: auto;
+  height: 100%;
   @media (max-width: 720px) {
     width: 100px;
   }

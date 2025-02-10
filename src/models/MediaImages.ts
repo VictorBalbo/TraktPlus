@@ -1,30 +1,27 @@
 export interface MediaImages {
-  backdrops: Image
-  logos: Image
-  posters: Image
-  stills: Image
+  backdrop?: string
+  poster?: string
+  still?: string
 }
 
-export interface Image {
-  aspect_ratio: number
-  height: number
-  width: number
-  iso_639_1: string | null
-  file_path: string
-  base_path: string
-  sizes: string[]
+export const getImageSrc = (images: MediaImages | undefined, imageType: keyof MediaImages) => {
+  return `${imageBasePath}/${imageSizes[imageType][0]}${images?.[imageType]}`
 }
 
-export const getImageSrc = (image?: Image) =>
-  `${image?.base_path}/${image?.sizes[0]}${image?.file_path}`
-
-export const getImageSrcSet = (image?: Image) =>
-  image?.sizes
+export const getImageSrcSet = (images: MediaImages | undefined, imageType: keyof MediaImages) =>
+  imageSizes[imageType]
     .map((s) => {
       if (s === 'original') {
-        return `${image?.base_path}/${s}${image?.file_path} `
+        return `${imageBasePath}/${s}${images?.[imageType]} `
       } else {
-        return `${image?.base_path}/${s}${image?.file_path} ${s.replace('w', '')}w`
+        return `${imageBasePath}/${s}${images?.[imageType]} ${s.replace('w', '')}w`
       }
     })
     .join(', ')
+
+const imageSizes = {
+  backdrop: ['w300', 'w780', 'w1280', 'original'],
+  poster: ['w92', 'w154', 'w185', 'w342', 'w500', 'original'],
+  still: ['w92', 'w185', 'w300', 'original'],
+}
+const imageBasePath = 'https://image.tmdb.org/t/p'

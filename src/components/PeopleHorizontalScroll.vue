@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends CastCrewMember">
-import type { CastCrewMember } from '@/models/People'
+import type { CastCrewMember } from '@/models/Credits'
 import type { SwiperOptions } from 'swiper/types'
 import { ref } from 'vue'
 import { Avatar } from '@/components'
@@ -46,9 +46,6 @@ const swiperOptions = ref<SwiperOptions>({
   </swiper-container>
 </template>
 <style scoped>
-.slider {
-  margin: 0 var(--large-spacing);
-}
 .slide {
   width: 125px;
   text-align: center;

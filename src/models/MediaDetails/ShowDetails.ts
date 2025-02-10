@@ -1,11 +1,9 @@
 import type { SeasonDetails } from './SeasonDetails'
-import type { Media, MediaType } from '..'
+import type { MediaDetails, MediaType } from '..'
+import type { ShowStatus } from './MediaDetails'
 
-export interface ShowDetails extends Media {
+export interface ShowDetails extends MediaDetails {
   type: MediaType.Show
-  tagline: string
-  overview: string
-  first_aired: string
   airs: Airs
   runtime: number
   certification: string
@@ -13,25 +11,13 @@ export interface ShowDetails extends Media {
   country: string
   trailer: string
   homepage: string
-  status: ShowStatus
-  genres: string[]
   aired_episodes: number
   seasons?: SeasonDetails[]
+  status?: ShowStatus
 }
 
 interface Airs {
   day: string
   time: string
   timezone: string
-}
-
-export enum ShowStatus {
-  ReturningSearies = 'returning series',
-  Continuing = 'continuing',
-  InProduction = 'in production',
-  Planned = 'planned',
-  Upcoming = 'upcoming',
-  Pilot = 'pilot',
-  Canceled = 'canceled',
-  Ended = 'ended',
 }

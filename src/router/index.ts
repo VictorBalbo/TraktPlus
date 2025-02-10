@@ -15,7 +15,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/:type(movie|show)/:id',
+      path: '/:type(movie|show)/:id/:seasonId?/:episodeId?',
       name: 'Detail',
       component: MediaDetailView,
       meta: { requiresAuth: true },

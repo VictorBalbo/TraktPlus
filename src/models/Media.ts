@@ -1,21 +1,17 @@
-import type { MediaImages, People, WatchProvider } from '@/models'
+import type { MediaImages } from '@/models'
 
 export interface Media {
   title: string
-  year?: number
   ids: Ids
   type: MediaType
   images?: MediaImages
-  providers: WatchProvider[]
-  scorings?: Scorings
-  people?: People
 }
 
 export interface Ids {
   trakt: number
-  slug: string
-  imdb: string
   tmdb: number
+  slug?: string
+  imdb?: string
   justwatch?: string
 }
 

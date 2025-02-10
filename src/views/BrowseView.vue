@@ -29,8 +29,8 @@ loadContent(watchlist, MediaService.getWatchlist())
       <ScrollCarousel :items="upNext" class="up-next">
         <template #default="item">
           <img
-            :src="getImageSrc(item.images?.stills)"
-            :srcset="getImageSrcSet(item.images?.stills)"
+            :src="getImageSrc(item.images, 'still')"
+            :srcset="getImageSrcSet(item.images, 'still')"
             sizes="(max-width: 720px) 200px, 250px"
             class="img"
             :title="item.show"
