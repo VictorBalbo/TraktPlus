@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
 import type { EpisodeDetails, Media } from '@/models'
-import { getImageSrc, getImageSrcSet } from '@/models/MediaImages'
 import { MediaService } from '@/services'
 import { Carousel, ScrollCarousel } from '@/components'
 
@@ -26,17 +25,10 @@ loadContent(watchlist, MediaService.getWatchlist())
     <Carousel v-if="recommendations" :items="recommendations" />
     <article v-if="upNext" class="content-article">
       <h2>Up Next</h2>
-      <ScrollCarousel :items="upNext" class="up-next">
-        <template #default="item">
-          <img
-            :src="getImageSrc(item.images, 'still')"
-            :srcset="getImageSrcSet(item.images, 'still')"
-            sizes="(max-width: 720px) 200px, 250px"
-            class="img"
-            :title="item.show"
-          />
+      <ScrollCarousel :items="upNext" imageType="still" class="up-next">
+        <template #footer="item">
           <article class="episode-titles">
-            <p class="elipsis">{{ item.show }}</p>
+            <p class="elipsis">{{ item.show.title }}</p>
             <small class="elipsis">
               {{ item.season }}x{{ item.number.toString().padStart(2, '0') }} - {{ item.title }}
             </small>
@@ -66,15 +58,6 @@ loadContent(watchlist, MediaService.getWatchlist())
   margin: var(--large-spacing);
 }
 
-.up-next ::v-deep(.slide) {
-  width: 250px;
-  overflow: hidden;
-  background-color: var(--color-background-soft);
-  border-radius: var(--large-spacing);
-  @media (max-width: 720px) {
-    width: 200px;
-  }
-}
 .img {
   width: 100%;
 

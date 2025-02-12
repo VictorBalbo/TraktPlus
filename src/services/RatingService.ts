@@ -1,4 +1,4 @@
-import { MediaType, type Media, type Ratings } from '@/models'
+import { MediaType, type MediaDetails, type Ratings, type SeasonDetails } from '@/models'
 import imdbIcon from '@/assets/images/imdb.svg'
 import justwatchIcon from '@/assets/images/justwatch.svg'
 import rtFreshCertifiedIcon from '@/assets/images/rotten-tomatoes-fresh-certified.svg'
@@ -8,7 +8,7 @@ import tmdbIcon from '@/assets/images/tmdb.svg'
 import traktIcon from '@/assets/images/trakt.svg'
 
 export class RatingService {
-  static getMediaRatings = (media: Media) => {
+  static getMediaRatings = (media: MediaDetails) => {
     const ratings = []
 
     const trakt = RatingService.getTraktRating(media)
@@ -39,7 +39,7 @@ export class RatingService {
     return ratings
   }
 
-  private static getTraktRating(media: Media) {
+  private static getTraktRating(media: MediaDetails) {
     if (!media.scorings?.traktScore) {
       return
     }
@@ -55,27 +55,33 @@ export class RatingService {
     } else if (media.type === MediaType.Show) {
       trakt.weblink = `https://trakt.tv/shows/${media.ids.trakt}`
     } else if (media.type === MediaType.Season) {
-      trakt.weblink = `https://trakt.tv/shows/${media.ids.trakt}/seasons/${media.ids.trakt}`
+      const season = media as SeasonDetails
+      trakt.weblink = `https://trakt.tv/shows/${season.show.ids.trakt}/seasons/${season.number}`
     } else if (media.type === MediaType.Episode) {
       trakt.weblink = `https://trakt.tv/shows/${media.ids.trakt}/seasons/${media.ids.trakt}/episodes/${media.ids.trakt}`
     }
     return trakt
   }
 
-  private static getImdbRating(media: Media) {
+  private static getImdbRating(media: MediaDetails) {
     if (!media.scorings?.imdbScore) {
       return
+    }
+    let imdbId = media.ids.imdb
+    if (media.type === MediaType.Season) {
+      const season = media as SeasonDetails
+      imdbId = season.show.ids.imdb
     }
     const imdb: Ratings = {
       provider: 'IMDb',
       score: media.scorings?.imdbScore.toFixed(1),
       unit: '/10',
-      weblink: `https://www.imdb.com/title/${media.ids.imdb}`,
+      weblink: `https://www.imdb.com/title/${imdbId}`,
       icon: imdbIcon,
     }
     return imdb
   }
-  private static getTmdbRating(media: Media) {
+  private static getTmdbRating(media: MediaDetails) {
     if (!media.scorings?.tmdbScore) {
       return
     }
@@ -91,14 +97,15 @@ export class RatingService {
     } else if (media.type === MediaType.Show) {
       tmdb.weblink = `https://www.themoviedb.org/tv/${media.ids.tmdb}`
     } else if (media.type === MediaType.Season) {
-      tmdb.weblink = `https://www.themoviedb.org/tv/${media.ids.tmdb}/season/${media.ids.tmdb}`
+      const season = media as SeasonDetails
+      tmdb.weblink = `https://www.themoviedb.org/tv/${season.show.ids.tmdb}/season/${season.number}`
     } else if (media.type === MediaType.Episode) {
       tmdb.weblink = `https://www.themoviedb.org/tv/${media.ids.tmdb}/season/${media.ids.tmdb}/episode/${media.ids.tmdb}`
     }
     return tmdb
   }
 
-  private static getJustWatchRating(media: Media) {
+  private static getJustWatchRating(media: MediaDetails) {
     if (!media.scorings?.jwRating) {
       return
     }
@@ -114,14 +121,15 @@ export class RatingService {
     } else if (media.type === MediaType.Show) {
       justWatch.weblink = `https://www.justwatch.com${media.ids.justwatch ?? media.ids.slug}`
     } else if (media.type === MediaType.Season) {
-      justWatch.weblink = `https://www.justwatch.com${media.ids.justwatch ?? media.ids.slug}/temporada-${media.ids.tmdb}`
+      const season = media as SeasonDetails
+      justWatch.weblink = `https://www.justwatch.com${season.ids.justwatch ?? media.ids.slug}/temporada-${season.number}`
     } else if (media.type === MediaType.Episode) {
       justWatch.weblink = `https://www.justwatch.com${media.ids.justwatch ?? media.ids.slug}/temporada-${media.ids.tmdb}`
     }
     return justWatch
   }
 
-  private static getRottenTomatoesRating = (media: Media) => {
+  private static getRottenTomatoesRating = (media: MediaDetails) => {
     if (!media.scorings?.tomatoMeter) {
       return
     }

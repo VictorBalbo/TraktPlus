@@ -8,7 +8,8 @@ export interface MediaDetails extends Media {
   providers?: WatchProvider[]
   scorings?: Scorings
   credits?: Credits
-  status?: ShowStatus | MovieStatus
+  certification?: string
+  runtime?: number
 }
 
 export enum ShowStatus {

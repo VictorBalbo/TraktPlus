@@ -1,12 +1,10 @@
-import type { SeasonDetails } from './SeasonDetails'
+import type { SeasonDetails } from './Season'
 import type { MediaDetails, MediaType } from '..'
-import type { ShowStatus } from './MediaDetails'
+import type { ShowStatus } from './Media'
 
 export interface ShowDetails extends MediaDetails {
   type: MediaType.Show
   airs: Airs
-  runtime: number
-  certification: string
   network: string
   country: string
   trailer: string

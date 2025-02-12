@@ -33,10 +33,10 @@ export class MediaService {
     episodeId?: string,
   ) => {
     let url = `${apiUrl}/${mediaType}/${id}`
-    if (mediaType === MediaType.Season && seasonId) {
+    if (mediaType === MediaType.Show && seasonId) {
       url += `/${seasonId}`
     }
-    if (mediaType === MediaType.Episode && seasonId && episodeId) {
+    if (mediaType === MediaType.Show && seasonId && episodeId) {
       url += `/${seasonId}/${episodeId}`
     }
     const watchlist = await MediaService.sendApiGetRequest<T>(url)

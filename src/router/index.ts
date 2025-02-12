@@ -3,6 +3,7 @@ import BrowseView from '@/views/BrowseView.vue'
 import LoginReturnView from '@/views/LoginReturnView.vue'
 import LoginView from '@/views/LoginView.vue'
 import MediaDetailView from '@/views/MediaDetailView.vue'
+import SeasonDetailView from '@/views/SeasonDetailView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -15,9 +16,15 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/:type(movie|show)/:id/:seasonId?/:episodeId?',
+      path: '/:type(movie|show)/:id',
       name: 'Detail',
       component: MediaDetailView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/show/:id/:seasonId',
+      name: 'SeasonDetail',
+      component: SeasonDetailView,
       meta: { requiresAuth: true },
     },
     {
