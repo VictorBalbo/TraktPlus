@@ -1,4 +1,10 @@
-import { MediaType, type MediaDetails, type Ratings, type SeasonDetails } from '@/models'
+import {
+  MediaType,
+  type EpisodeDetails,
+  type MediaDetails,
+  type Ratings,
+  type SeasonDetails,
+} from '@/models'
 import imdbIcon from '@/assets/images/imdb.svg'
 import justwatchIcon from '@/assets/images/justwatch.svg'
 import rtFreshCertifiedIcon from '@/assets/images/rotten-tomatoes-fresh-certified.svg'
@@ -16,14 +22,14 @@ export class RatingService {
       ratings.push(trakt)
     }
 
-    const imdb = RatingService.getImdbRating(media)
-    if (imdb) {
-      ratings.push(imdb)
-    }
-
     const tmdb = RatingService.getTmdbRating(media)
     if (tmdb) {
       ratings.push(tmdb)
+    }
+
+    const imdb = RatingService.getImdbRating(media)
+    if (imdb) {
+      ratings.push(imdb)
     }
 
     const justWatch = RatingService.getJustWatchRating(media)
@@ -58,7 +64,8 @@ export class RatingService {
       const season = media as SeasonDetails
       trakt.weblink = `https://trakt.tv/shows/${season.show.ids.trakt}/seasons/${season.number}`
     } else if (media.type === MediaType.Episode) {
-      trakt.weblink = `https://trakt.tv/shows/${media.ids.trakt}/seasons/${media.ids.trakt}/episodes/${media.ids.trakt}`
+      const episode = media as EpisodeDetails
+      trakt.weblink = `https://trakt.tv/shows/${episode.show.ids.trakt}/seasons/${episode.seasonNumber}/episodes/${episode.number}`
     }
     return trakt
   }
@@ -100,7 +107,8 @@ export class RatingService {
       const season = media as SeasonDetails
       tmdb.weblink = `https://www.themoviedb.org/tv/${season.show.ids.tmdb}/season/${season.number}`
     } else if (media.type === MediaType.Episode) {
-      tmdb.weblink = `https://www.themoviedb.org/tv/${media.ids.tmdb}/season/${media.ids.tmdb}/episode/${media.ids.tmdb}`
+      const episode = media as EpisodeDetails
+      tmdb.weblink = `https://www.themoviedb.org/tv/${episode.show.ids.tmdb}/season/${episode.seasonNumber}/episode/${episode.number}`
     }
     return tmdb
   }

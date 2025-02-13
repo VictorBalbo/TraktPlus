@@ -28,13 +28,13 @@ const getRouteToParams = (item: T) => {
   if (item.type === MediaType.Season) {
     const season = item as Season
     to = {
-      name: 'SeasonDetail',
+      name: 'Detail',
       params: { type: MediaType.Show, id: season.showId, seasonId: season.number },
     }
   } else if (item.type === MediaType.Episode) {
     const episode = item as Episode
     to = {
-      name: 'SeasonDetail',
+      name: 'Detail',
       params: {
         type: MediaType.Show,
         id: episode.showId,
