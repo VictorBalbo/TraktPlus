@@ -21,7 +21,7 @@ export const getImageSrcSet = (images: MediaImages | undefined, imageType: keyof
 
 const imageSizes = {
   backdrop: ['w300', 'w780', 'w1280', 'original'],
-  poster: ['w92', 'w154', 'w185', 'w342', 'w500', 'original'],
-  still: ['w92', 'w185', 'w300', 'original'],
+  poster: ['w92', 'w154', 'w185', 'w342', 'w500'],
+  still: ['w92', 'w185', 'w300'],
 }
 const imageBasePath = 'https://image.tmdb.org/t/p'

@@ -56,34 +56,6 @@ const getDisplayProviderType = (providerType: string) => {
       return 'Buy'
   }
 }
-
-const getDisplayMediaStatus = (showStatus: MovieStatus | ShowStatus) => {
-  switch (showStatus) {
-    case ShowStatus.Continuing:
-    case ShowStatus.ReturningSearies:
-      return 'Airing'
-    case ShowStatus.InProduction:
-    case MovieStatus.InProduction:
-      return 'In Production'
-    case ShowStatus.Upcoming:
-    case ShowStatus.Planned:
-    case MovieStatus.Planned:
-      return 'In Development'
-    case ShowStatus.Pilot:
-      return 'In Pilot'
-    case ShowStatus.Canceled:
-    case MovieStatus.Canceled:
-      return 'Canceled'
-    case ShowStatus.Ended:
-      return 'Ended'
-    case MovieStatus.Released:
-      return 'Released'
-    case MovieStatus.PostProduction:
-      return 'In Post Production'
-    case MovieStatus.Rumored:
-      return 'Rumored'
-  }
-}
 </script>
 
 <template>
@@ -126,10 +98,12 @@ const getDisplayMediaStatus = (showStatus: MovieStatus | ShowStatus) => {
           </a>
         </section>
         <section class="info-section">
-          <h3>
+          <h3 v-if="media?.type === MediaType.Movie">
             {{ getDisplayTime(media?.runtime ?? 0) }}
           </h3>
-          <p v-if="media?.type === MediaType.Show && media.aired_episodes">
+          <h3 v-else-if="media?.type === MediaType.Show">{{ media.episodes }} Episodes</h3>
+
+          <p v-if="media?.type === MediaType.Show && media.aired_episodes !== media.episodes">
             <small> Episodes Aired: </small>
             {{ media.aired_episodes }}
           </p>
@@ -169,8 +143,8 @@ const getDisplayMediaStatus = (showStatus: MovieStatus | ShowStatus) => {
           </p>
 
           <p v-if="media?.status">
-            <small> {{ media?.type === MediaType.Show ? 'Show' : 'Movie' }} is </small>
-            {{ getDisplayMediaStatus(media?.status) }}
+            <small> {{ media?.type === MediaType.Show ? 'Show' : 'Movie' }} status is: </small>
+            {{ media.status }}
           </p>
         </section>
         <section v-if="media?.tagline || media?.overview" class="info-section">
@@ -211,7 +185,10 @@ const getDisplayMediaStatus = (showStatus: MovieStatus | ShowStatus) => {
             </template>
           </ScrollCarousel>
         </section>
-        <section v-if="media?.credits" class="info-section people-section">
+        <section
+          v-if="media?.credits && (media.credits.cast.length || media.credits.crew)"
+          class="info-section people-section"
+        >
           <h3>Cast and Crew</h3>
           <PeopleHorizontalScroll :items="people" />
         </section>

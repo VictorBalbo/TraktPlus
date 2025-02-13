@@ -1,7 +1,6 @@
-<script setup lang="ts" generic="T extends Media | SeasonDetails | EpisodeDetails">
+<script setup lang="ts" generic="T extends Media | Season | Episode">
 import { ref } from 'vue'
-import { MediaType, type EpisodeDetails, type Media, type SeasonDetails } from '@/models'
-import type { Episode } from '@/models/Media/Episode'
+import { MediaType, type Media, type Season, type Episode } from '@/models'
 import { getImageSrc, getImageSrcSet, type MediaImages } from '@/models/MediaImages'
 import type { SwiperOptions } from 'swiper/types'
 import type { RouteLocationRaw } from 'vue-router'
@@ -27,10 +26,10 @@ const getRouteToParams = (item: T) => {
     params: { type: item.type, id: item.ids.trakt },
   }
   if (item.type === MediaType.Season) {
-    const season = item as SeasonDetails
+    const season = item as Season
     to = {
       name: 'SeasonDetail',
-      params: { type: MediaType.Show, id: season.show.ids.trakt, seasonId: season.number },
+      params: { type: MediaType.Show, id: season.showId, seasonId: season.number },
     }
   } else if (item.type === MediaType.Episode) {
     const episode = item as Episode
@@ -38,8 +37,8 @@ const getRouteToParams = (item: T) => {
       name: 'SeasonDetail',
       params: {
         type: MediaType.Show,
-        id: episode.show.ids.trakt,
-        seasonId: episode.season,
+        id: episode.showId,
+        seasonId: episode.seasonNumber,
         episodeId: episode.number,
       },
     }
@@ -63,7 +62,7 @@ const getRouteToParams = (item: T) => {
           v-if="item.images?.[imageType]"
           :src="getImageSrc(item.images, imageType)"
           :srcset="getImageSrcSet(item.images, imageType)"
-          sizes="(max-width: 720px) 100px, 150px"
+          :sizes="imageType === 'poster' ? '150px' : '250px'"
           class="img"
           :title="item.title"
         />

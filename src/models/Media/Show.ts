@@ -1,21 +1,13 @@
-import type { SeasonDetails } from './Season'
+import type { Season } from './Season'
 import type { MediaDetails, MediaType } from '..'
 import type { ShowStatus } from './Media'
 
 export interface ShowDetails extends MediaDetails {
   type: MediaType.Show
-  airs: Airs
-  network: string
-  country: string
-  trailer: string
-  homepage: string
-  aired_episodes: number
-  seasons?: SeasonDetails[]
+  network?: string
+  country?: string
   status?: ShowStatus
-}
-
-interface Airs {
-  day: string
-  time: string
-  timezone: string
+  episodes: number
+  aired_episodes: number
+  seasons?: Season[]
 }

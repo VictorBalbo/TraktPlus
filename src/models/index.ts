@@ -8,10 +8,10 @@ import type { Credits } from './Credits'
 import type { MediaDetails } from './Media/Media'
 import type { MovieDetails } from './Media/Movie'
 import type { Episode } from './Media/Episode'
-import type { SeasonDetails } from './Media/Season'
+import type { Season, SeasonDetails } from './Media/Season'
 import type { ShowDetails } from './Media/Show'
 
 export type { Ids, Media, MediaImages, Credits, Scorings, WatchProvider, Ratings }
 export { MediaType }
 
-export type { MediaDetails, MovieDetails, ShowDetails, SeasonDetails, Episode as EpisodeDetails }
+export type { MediaDetails, MovieDetails, ShowDetails, SeasonDetails, Season, Episode }

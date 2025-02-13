@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-import type { EpisodeDetails, Media } from '@/models'
+import type { Episode, Media } from '@/models'
 import { MediaService } from '@/services'
 import { Carousel, ScrollCarousel } from '@/components'
 
 const recommendations = ref<Media[]>()
 const trendingMovies = ref<Media[]>()
 const trendingShows = ref<Media[]>()
-const upNext = ref<EpisodeDetails[]>()
+const upNext = ref<Episode[]>()
 const watchlist = ref<Media[]>()
 
 const loadContent = async <T,>(variable: Ref<T>, responsePromise: Promise<T>) => {
@@ -28,9 +28,10 @@ loadContent(watchlist, MediaService.getWatchlist())
       <ScrollCarousel :items="upNext" imageType="still" class="up-next">
         <template #footer="item">
           <article class="episode-titles">
-            <p class="elipsis">{{ item.show.title }}</p>
+            <p class="elipsis">{{ item.showTitle }}</p>
             <small class="elipsis">
-              {{ item.season }}x{{ item.number.toString().padStart(2, '0') }} - {{ item.title }}
+              {{ item.seasonNumber }}x{{ item.number.toString().padStart(2, '0') }} -
+              {{ item.title }}
             </small>
           </article>
         </template>

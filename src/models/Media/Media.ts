@@ -10,24 +10,33 @@ export interface MediaDetails extends Media {
   credits?: Credits
   certification?: string
   runtime?: number
+  trailers?: Trailer[]
+  homepage?: string
 }
 
 export enum ShowStatus {
-  ReturningSearies = 'returning series',
-  Continuing = 'continuing',
-  InProduction = 'in production',
-  Planned = 'planned',
-  Upcoming = 'upcoming',
-  Pilot = 'pilot',
-  Canceled = 'canceled',
-  Ended = 'ended',
+  ReturningSearies = 'Returning Series',
+  Continuing = 'Continuing',
+  InProduction = 'In Production',
+  Planned = 'Planned',
+  Upcoming = 'Upcoming',
+  Pilot = 'Pilot',
+  Canceled = 'Canceled',
+  Ended = 'Ended',
 }
 
 export enum MovieStatus {
-  Rumored = 'rumored',
-  Planned = 'planned',
-  InProduction = 'in production',
-  PostProduction = 'post production',
-  Released = 'released',
-  Canceled = 'canceled',
+  Rumored = 'Rumored',
+  Planned = 'Planned',
+  InProduction = 'In Production',
+  PostProduction = 'Post Production',
+  Released = 'Released',
+  Canceled = 'Canceled',
+}
+
+interface Trailer {
+  iso_639_1: string
+  name: string
+  url: string
+  type: string
 }

@@ -1,12 +1,19 @@
-import type { Media, MediaType } from '..'
+import type { Media, MediaDetails, MediaType } from '..'
 
 export interface Episode extends Media {
   type: MediaType.Episode
-  show: Media
-  season: number
+  showId: number
+  showTitle?: string
+  seasonNumber: number
   number: number
-  overview?: string
-  first_aired?: string
-  runtime?: number
+  episode_type?: string
+}
+
+export interface EpisodeDetails extends MediaDetails {
+  type: MediaType.Episode
+  show: Media
+  seasonNumber: number
+  seasonTitle: number
+  number: number
   episode_type?: string
 }
