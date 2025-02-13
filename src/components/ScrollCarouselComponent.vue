@@ -56,7 +56,7 @@ const getRouteToParams = (item: T) => {
       :class="imageType"
       :lazy="item.images?.[imageType]"
     >
-      <RouterLink :to="getRouteToParams(item)">
+      <RouterLink :to="getRouteToParams(item)" class="link">
         <slot name="header" v-bind="item"></slot>
         <img
           v-if="item.images?.[imageType]"
@@ -76,6 +76,14 @@ const getRouteToParams = (item: T) => {
 <style scoped>
 .slide {
   height: 100%;
+  background-color: var(--color-background-soft);
+  border-radius: var(--large-spacing);
+  overflow: hidden;
+  .link {
+    display: flex;
+    flex-direction: column;
+  }
+
   &.poster {
     width: 150px;
     @media (max-width: 720px) {
@@ -94,7 +102,6 @@ const getRouteToParams = (item: T) => {
     }
   }
   .img {
-    border-radius: var(--large-spacing);
     width: 100%;
     height: 100%;
   }

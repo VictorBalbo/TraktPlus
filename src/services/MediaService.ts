@@ -1,4 +1,4 @@
-import { MediaType, type EpisodeDetails, type Media } from '@/models'
+import { MediaType, type Episode, type Media } from '@/models'
 import { useTraktStore } from '@/store/TracktStore'
 import { apiUrl } from '@/constants'
 
@@ -17,7 +17,7 @@ export class MediaService {
 
   static getUpNext = async () => {
     const url = `${apiUrl}/upnext`
-    const upnext = await MediaService.sendApiGetRequest<EpisodeDetails[]>(url)
+    const upnext = await MediaService.sendApiGetRequest<Episode[]>(url)
     return upnext
   }
   static getWatchlist = async () => {
