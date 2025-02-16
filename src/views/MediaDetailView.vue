@@ -17,7 +17,7 @@ import {
   EpisodeDetailsSection,
 } from '@/components/MediaDetails'
 import { HeartIcon } from '@/components/icons'
-import { PeopleHorizontalScroll, ScrollCarousel, Popover, Rating, Tag, AntTag } from '@/components'
+import { PeopleHorizontalScroll, ScrollCarousel, Popover, Rating, Tag } from '@/components'
 
 const route = useRoute()
 const media = ref<T>()
@@ -94,9 +94,6 @@ const getDisplayProviderType = (providerType: string) => {
               dayjs(media?.released).format('YYYY')
             }}</span>
             <Tag v-if="media?.certification" :value="media.certification" class="certification" />
-            <AntTag v-if="media?.certification" class="certification">{{
-              media.certification
-            }}</AntTag>
           </h1>
         </article>
         <section class="ratings">
