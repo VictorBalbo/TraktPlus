@@ -42,12 +42,28 @@ export class MediaService {
     return watchlist
   }
 
+  static setMediaRating = async (media: Media, rating: number) => {
+    const url = `${apiUrl}/sync/ratings`
+    const body = { ids: media.ids, type: media.type, rating }
+
+    const succes = await MediaService.sendApiPostRequest(url, body)
+    return succes
+  }
+
   private static sendApiGetRequest = async <T>(uri: string) => {
     const response = await fetch(uri, {
       headers: MediaService.getDefaultHeaders(),
     })
     const value = (await response.json()) as T
     return value
+  }
+  private static sendApiPostRequest = async (uri: string, body: unknown) => {
+    const response = await fetch(uri, {
+      method: 'POST',
+      headers: { ...MediaService.getDefaultHeaders(), 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    return response.ok
   }
   private static getDefaultHeaders = () => {
     const traktStore = useTraktStore()

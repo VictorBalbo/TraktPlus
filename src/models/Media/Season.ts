@@ -7,6 +7,7 @@ export interface Season extends Media {
   episode_count?: number
   aired_episodes?: number
   showId: number
+  released?: string
 }
 
 export interface SeasonDetails extends MediaDetails {

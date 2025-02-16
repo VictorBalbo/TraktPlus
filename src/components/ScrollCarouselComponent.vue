@@ -28,13 +28,13 @@ const getRouteToParams = (item: T) => {
   if (item.type === MediaType.Season) {
     const season = item as Season
     to = {
-      name: 'Detail',
+      name: 'SeasonDetail',
       params: { type: MediaType.Show, id: season.showId, seasonId: season.number },
     }
   } else if (item.type === MediaType.Episode) {
     const episode = item as Episode
     to = {
-      name: 'Detail',
+      name: 'EpisodeDetail',
       params: {
         type: MediaType.Show,
         id: episode.showId,
@@ -104,6 +104,7 @@ const getRouteToParams = (item: T) => {
   .img {
     width: 100%;
     height: 100%;
+    border-radius: var(--large-spacing);
   }
   .avatar {
     width: 100%;

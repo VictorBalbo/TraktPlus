@@ -4,6 +4,7 @@ export interface MediaDetails extends Media {
   tagline?: string
   overview?: string
   released?: string
+  userRating?: number
   genres?: string[]
   providers?: WatchProvider[]
   scorings?: Scorings

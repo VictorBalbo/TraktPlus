@@ -15,8 +15,20 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/:type(movie|show)/:id/:seasonId?/:episodeId?',
+      path: '/:type(movie|show)/:id',
       name: 'Detail',
+      component: MediaDetailView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/:type(show)/:id/season/:seasonId?',
+      name: 'SeasonDetail',
+      component: MediaDetailView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/:type(show)/:id/season/:seasonId?/episode/:episodeId?',
+      name: 'EpisodeDetail',
       component: MediaDetailView,
       meta: { requiresAuth: true },
     },

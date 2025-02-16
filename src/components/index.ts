@@ -10,4 +10,6 @@ export { Carousel, PeopleHorizontalScroll, ScrollCarousel, SideMenuComponent }
 
 import Avatar from 'primevue/avatar'
 import Tag from 'primevue/tag'
-export { Avatar, Tag }
+import Popover from 'primevue/popover'
+import Rating from 'primevue/rating'
+export { Avatar, Popover, Rating, Tag }

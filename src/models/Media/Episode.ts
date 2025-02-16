@@ -7,6 +7,7 @@ export interface Episode extends Media {
   seasonNumber: number
   number: number
   episode_type?: string
+  released?: string
 }
 
 export interface EpisodeDetails extends MediaDetails {

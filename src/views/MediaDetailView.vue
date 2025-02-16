@@ -3,7 +3,7 @@
   lang="ts"
   generic="T extends MovieDetails | ShowDetails | SeasonDetails | EpisodeDetails"
 >
-import { computed, ref } from 'vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import { useRoute } from 'vue-router'
 import dayjs from 'dayjs'
 import { MediaService, RatingService } from '@/services'
@@ -16,11 +16,14 @@ import {
   SeasonDetailsSection,
   EpisodeDetailsSection,
 } from '@/components/MediaDetails'
-import { PeopleHorizontalScroll, ScrollCarousel, Tag } from '@/components'
+import { HeartIcon } from '@/components/icons'
+import { PeopleHorizontalScroll, ScrollCarousel, Popover, Rating, Tag, AntTag } from '@/components'
 
 const route = useRoute()
 const media = ref<T>()
 const ratings = ref<Ratings[]>()
+const userRating = ref(0)
+const ratingPopover = useTemplateRef('ratingPopover')
 
 const loadMedia = async () => {
   const mediaType = route.params.type as MediaType
@@ -31,6 +34,7 @@ const loadMedia = async () => {
   media.value = await MediaService.getMediaDetail(mediaType, mediaId, seasonId, episodeId)
   if (media.value) {
     ratings.value = RatingService.getMediaRatings(media.value)
+    userRating.value = media.value.userRating ?? 0
   }
 }
 loadMedia()
@@ -89,11 +93,42 @@ const getDisplayProviderType = (providerType: string) => {
             <span v-if="media?.released" class="subtitle">{{
               dayjs(media?.released).format('YYYY')
             }}</span>
-            <Tag v-if="media?.certification" :value="media?.certification" class="certification" />
+            <Tag v-if="media?.certification" :value="media.certification" class="certification" />
+            <AntTag v-if="media?.certification" class="certification">{{
+              media.certification
+            }}</AntTag>
           </h1>
         </article>
         <section class="ratings">
-          <a v-for="rating in ratings" :key="rating.provider" :href="rating.weblink" class="rating">
+          <article class="rating link" @click="ratingPopover?.toggle">
+            <HeartIcon class="heart full" />
+            <p v-if="userRating" style="margin-left: var(--small-spacing)">
+              {{ media?.userRating }}
+              <small class="unit">/10 </small>
+            </p>
+            <p v-else style="margin-left: var(--small-spacing)">Rate</p>
+          </article>
+          <Popover ref="ratingPopover">
+            <Rating
+              v-model="userRating"
+              :stars="10"
+              @update:modelValue="MediaService.setMediaRating(media!, userRating)"
+            >
+              <template #onicon>
+                <HeartIcon class="heart full" />
+              </template>
+              <template #officon>
+                <HeartIcon class="heart empty" />
+              </template>
+            </Rating>
+          </Popover>
+          <a
+            v-for="rating in ratings"
+            :key="rating.provider"
+            :href="rating.weblink"
+            class="rating"
+            :class="rating.weblink ? 'link' : ''"
+          >
             <img :src="rating.icon" :alt="rating.provider" />
             <p class="">
               {{ rating.score }}
@@ -153,8 +188,10 @@ const getDisplayProviderType = (providerType: string) => {
           <ScrollCarousel :items="media.episodes" imageType="still">
             <template #footer="episode">
               <article class="season-title">
+                <small>
+                  Episode {{ media.number }}x{{ episode.number.toString().padStart(2, '0') }}</small
+                >
                 {{ episode.title }}
-                <small> {{ media.number }}x{{ episode.number.toString().padStart(2, '0') }}</small>
               </article>
             </template>
           </ScrollCarousel>
@@ -229,10 +266,17 @@ const getDisplayProviderType = (providerType: string) => {
   }
   .certification {
     margin-left: var(--small-spacing);
+    border: 1px solid var(--color-subheader);
+
+    background-color: #00000066;
+    color: var(--color-subheader);
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+
     --p-tag-primary-background: #00000066;
     --p-tag-primary-color: var(--color-subheader);
     --p-tag-padding: 0 0.5rem;
-    border: 1px solid var(--color-subheader);
   }
   .ratings {
     display: flex;
@@ -240,6 +284,16 @@ const getDisplayProviderType = (providerType: string) => {
       margin-right: var(--large-spacing);
       display: flex;
       align-items: center;
+      padding: var(--small-spacing);
+
+      &.link {
+        cursor: pointer;
+        transition: all var(--default-transition);
+        &:hover {
+          background-color: var(--color-background-soft);
+          border-radius: var(--small-spacing);
+        }
+      }
 
       img {
         height: 1.5rem;
@@ -282,6 +336,21 @@ const getDisplayProviderType = (providerType: string) => {
       display: flex;
       flex-direction: column;
     }
+    .season-episode {
+      color: var(--color-text);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+.heart {
+  width: 20px;
+  &.full {
+    color: #fa320a;
+  }
+  &.empty {
+    color: gray;
   }
 }
 </style>

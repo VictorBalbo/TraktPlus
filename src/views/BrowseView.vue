@@ -64,12 +64,15 @@ loadContent(watchlist, MediaService.getWatchlist())
   aspect-ratio: 16/9;
 }
 .episode-titles {
-  padding: 0 var(--small-spacing) var(--small-spacing);
+  padding: var(--small-spacing);
   .elipsis {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     display: block;
   }
+}
+.up-next ::v-deep(.img) {
+  border-radius: 0;
 }
 </style>

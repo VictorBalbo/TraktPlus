@@ -9,7 +9,7 @@ import { SideMenuComponent } from '@/components'
     <main class="main">
       <!-- <SideMenuComponent /> -->
 
-      <RouterView class="view" />
+      <RouterView :key="$route.fullPath" class="view" />
     </main>
   </div>
 </template>
